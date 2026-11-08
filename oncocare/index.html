@@ -27,7 +27,9 @@
 <div class="fast" style="background:#edf8fa;border:1px solid #c8e5eb"><div class="row"><strong>Message preview</strong><span class="pill">Updates automatically</span></div><div id="draftMessage" class="preview" style="background:white;margin-bottom:0"></div></div>
 <div class="field"><label class="check"><input id="consent" type="checkbox" required><span>The caregiver agreed to receive WhatsApp reminders about this procedure. *</span></label></div>
 <button class="primary" type="submit" id="saveBtn">Save procedure</button><button class="btn hidden" type="button" id="cancelEdit" style="margin-top:8px">Cancel editing</button></form></section>
-<section id="schedule" class="panel hidden"><h2>Procedure schedule</h2><p class="sub">Reminders go out automatically at 8:00 AM the day before. Procedures marked “Send today” are due.</p><input id="search" type="search" placeholder="Search by name, MRN, initials or phone" autocomplete="off" style="margin-bottom:6px"><p class="hint" id="searchNote" style="margin:0 0 10px"></p><div id="appointments" class="list"></div>
+<section id="schedule" class="panel hidden"><h2>Procedure schedule</h2><p class="sub">Reminders go out automatically at 8:00 AM the day before. Procedures marked “Send today” are due.</p><input id="search" type="search" placeholder="Search by name, MRN, initials or phone" autocomplete="off" style="margin-bottom:6px"><p class="hint" id="searchNote" style="margin:0 0 10px"></p><div class="actions" style="margin:6px 0 10px"><button class="btn primary" data-view="upcoming">Upcoming</button><button class="btn" data-view="past">Past</button><button class="btn" data-view="cancelled">Cancelled</button><button class="btn" data-view="all">All</button></div>
+<div id="bulkBar" class="actions hidden" style="margin:0 0 10px"><button class="btn" id="selMode">Select</button><button class="btn hidden" id="selAll">Select all shown</button><button class="btn danger hidden" id="delSel">Delete selected (0)</button></div>
+<div id="appointments" class="list"></div>
 <div id="detail" class="hidden"><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><h2>Caregiver message</h2><div class="actions" style="margin:10px 0"><button class="btn" id="detailArabic" type="button">العربية</button><button class="btn" id="detailEnglish" type="button">English</button></div><div id="message" class="preview"></div><p id="detailErr" class="hint err"></p>
 <div class="actions"><button class="btn primary" id="sendNow">Send now on WhatsApp</button><button class="btn" id="copy">Copy message</button><button class="btn" id="wa">Open WhatsApp (manual)</button><button class="btn hidden" id="markSent">Mark as sent (manual)</button><button class="btn" id="edit">Edit</button><button class="btn" id="cancelProc">Cancel procedure</button><button class="btn danger" id="remove">Delete</button></div>
 <p class="hint">“Send now” uses the approved template and updates the status automatically. Manual WhatsApp opens a draft from your own phone and is not tracked.</p>
@@ -95,19 +97,19 @@ const waNum=p=>{const plus=p.trim().startsWith('+'),n=p.replace(/\D/g,'');if(plu
 
 /* data */
 async function load(){const {data:rows,error}=await sb.from('appointments').select('*').order('proc_date').order('proc_time');if(error){alert('Could not load schedule: '+error.message);return}await Promise.all(rows.map(async r=>{r.phoneClear=KEY&&r.phone_enc?await decPhone(r.phone_enc):(r.phone||'')}));data=rows;render();if(selected)select(selected.id,true)}
-function render(){const live=data.filter(x=>!x.cancelled),c=s=>live.filter(x=>s.includes(x.status)).length;
+function render(){updViewCounts();const live=data.filter(x=>!x.cancelled),c=s=>live.filter(x=>s.includes(x.status)).length;
  $('countAll').textContent=live.length;$('countPending').textContent=c(['Pending','Sending','Failed']);$('countSent').textContent=c(['Sent','Delivered','Read']);
- const root=$('appointments');root.innerHTML='';const rows=filtered();if(!data.length){root.innerHTML='<p class="hint">No procedures registered yet.</p>';return}if(!rows.length){root.innerHTML='<p class="hint">No procedure matches your search.</p>';return}
+ const root=$('appointments');root.innerHTML='';const rows=filtered();if(!data.length){root.innerHTML='<p class="hint">No procedures registered yet.</p>';return}if(!rows.length){root.innerHTML='<p class="hint">'+(Q?'No procedure matches your search.':'Nothing in this view.')+'</p>';return}
  const tm=baghdad(86400e3);
  rows.forEach(a=>{const b=document.createElement('button');b.className='item';b.innerHTML='<span><strong></strong><small></small></span><span class="pill"></span>';
-  const st=b.querySelector('strong');st.textContent=a.patient_initials||'—';if(a.created_by_name||a.created_by_email){const by=document.createElement('span');by.textContent=' · 👤 '+(a.created_by_name||a.created_by_email);by.style.cssText='font-weight:400;font-size:12px;color:var(--muted)';st.appendChild(by)}
+  const st=b.querySelector('strong');st.textContent=(selMode?(sel.has(a.id)?'☑ ':'☐ '):'')+(a.patient_initials||'—');if(a.created_by_name||a.created_by_email){const by=document.createElement('span');by.textContent=' · 👤 '+(a.created_by_name||a.created_by_email);by.style.cssText='font-weight:400;font-size:12px;color:var(--muted)';st.appendChild(by)}
   b.querySelector('small').textContent=`${ORDER.filter(x=>a.procs.includes(x)).join(' + ')} · ${dl(a.proc_date)} ${a.proc_time.slice(0,5)} · ${a.phoneClear||'(locked)'}`;
   const p=b.querySelector('.pill'),nn=['Needed','Failed'].includes(a.notice_status);p.textContent=a.status;
   if(a.cancelled){p.textContent=nn?'Cancelled · tell family':'Cancelled';if(nn)p.classList.add('bad');b.style.opacity='.75'}
   else if(nn){p.textContent=a.notice_status==='Failed'?'Notice failed':'Tell family: changed';p.classList.add('bad')}
   else if(a.status==='Pending'&&a.proc_date===tm){p.textContent='Send today';p.classList.add('bad')}
   else if(a.status==='Failed')p.classList.add('bad');else if(['Delivered','Read'].includes(a.status))p.classList.add('ok');
-  b.onclick=()=>select(a.id);root.appendChild(b)})}
+  b.onclick=()=>{if(selMode){sel.has(a.id)?sel.delete(a.id):sel.add(a.id);render();updBulk()}else select(a.id)};root.appendChild(b)})}
 function select(id,keep){selected=data.find(x=>x.id===id);if(!selected){$('detail').classList.add('hidden');return}
  $('detail').classList.remove('hidden');$('message').textContent=msg(selected);$('detailErr').textContent=selected.error?'Last error: '+selected.error:'';
  $('detailArabic').classList.toggle('primary',selected.lang==='Arabic');$('detailEnglish').classList.toggle('primary',selected.lang==='English');
@@ -186,7 +188,7 @@ async function enter(session){lastSession=session;
  if(!KEY){$('app').classList.add('hidden');$('keyGate').classList.remove('hidden');return}
  $('keyGate').classList.add('hidden');
  $('who').textContent='Signed in as '+(st.full_name?st.full_name+' · ':'')+session.user.email+(me.is_admin?' (administrator)':'');
- await load();pushRefresh();$('admin').classList.toggle('hidden',!me.is_admin);$('phoneAdmin').classList.toggle('hidden',!me.is_owner);if(me.is_admin)loadStaff();
+ await load();pushRefresh();$('admin').classList.toggle('hidden',!me.is_admin);$('phoneAdmin').classList.toggle('hidden',!me.is_owner);$('bulkBar').classList.toggle('hidden',!me.is_admin);if(me.is_admin)loadStaff();
  if(channel)sb.removeChannel(channel);channel=sb.channel('live').on('postgres_changes',{event:'*',schema:'public',table:'appointments'},load).on('postgres_changes',{event:'*',schema:'public',table:'staff'},()=>{if(me?.is_admin)loadStaff()}).subscribe()}
 document.querySelectorAll('[data-eye]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.eye),show=i.type==='password';i.type=show?'text':'password';
  b.setAttribute('aria-pressed',String(show));b.setAttribute('aria-label',show?'Hide password':'Show password');b.querySelector('.eo').style.display=show?'none':'';b.querySelector('.ec').style.display=show?'':'none';i.focus()}));
@@ -271,7 +273,11 @@ const normName=t=>dig(t).normalize('NFKD').replace(/[\u0300-\u036f\u064B-\u065F\
 const normMrn=t=>dig(t).toLowerCase().replace(/[^0-9a-z]/g,'');
 const initials=t=>t.trim().split(/\s+/).map(w=>(w.match(/\p{L}/u)||[''])[0].toUpperCase()).filter(Boolean).join('.')+'.';
 const IR=t=>t.replace(/[^\p{L}]/gu,'').toUpperCase();
-function filtered(){if(!Q)return data;$('searchNote').textContent='';
+let listView='upcoming',selMode=false;const sel=new Set();
+const byView=()=>{const t=baghdad(0);return data.filter(x=>listView==='all'||(listView==='cancelled'?x.cancelled:listView==='past'?!x.cancelled&&x.proc_date<t:!x.cancelled&&x.proc_date>=t))};
+function updViewCounts(){const t=baghdad(0),c={upcoming:0,past:0,cancelled:0,all:data.length};data.forEach(x=>{if(x.cancelled)c.cancelled++;else if(x.proc_date<t)c.past++;else c.upcoming++});
+ document.querySelectorAll('[data-view]').forEach(b=>b.textContent=({upcoming:'Upcoming',past:'Past',cancelled:'Cancelled',all:'All'})[b.dataset.view]+' ('+c[b.dataset.view]+')')}
+function filtered(){$('searchNote').textContent='';if(!Q)return byView();
  const ex=data.filter(x=>(x.mrn_hash&&x.mrn_hash===Q.mh)||(x.name_hash&&x.name_hash===Q.nh)||(Q.dg&&(x.phoneClear||'').replace(/\D/g,'').includes(Q.dg)));
  if(ex.length){$('searchNote').textContent=ex.length+' exact match'+(ex.length>1?'es':'')+'.';return ex}
  const ini=Q.ini?data.filter(x=>IR(x.patient_initials||'')===Q.ini):[];
@@ -297,6 +303,16 @@ $('encOld').onclick=async()=>{const old=data.filter(x=>x.phone&&!x.phone_enc);if
  if(!confirm('Encrypt '+old.length+' saved phone number(s)? The readable copies will be removed.'))return;
  for(const x of old){const {error}=await sb.from('appointments').update({phone_enc:await encPhone(x.phone),phone:null}).eq('id',x.id);if(error){alert('Stopped: '+error.message);return}}
  await load();alert('Done. '+old.length+' number(s) are now encrypted.')};
+/* list views and bulk delete (administrators) */
+const updBulk=()=>{$('selAll').classList.toggle('hidden',!selMode);$('delSel').classList.toggle('hidden',!selMode);$('selMode').textContent=selMode?'Done selecting':'Select';$('delSel').textContent='Delete selected ('+sel.size+')';$('delSel').disabled=!sel.size};
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{listView=b.dataset.view;sel.clear();document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('primary',x===b));render();updBulk()});
+$('selMode').onclick=()=>{selMode=!selMode;sel.clear();updBulk();render()};
+$('selAll').onclick=()=>{filtered().forEach(a=>sel.add(a.id));updBulk();render()};
+$('delSel').onclick=async()=>{const n=sel.size;if(!n)return;
+ if(!confirm('Permanently delete '+n+' appointment'+(n>1?'s':'')+'?\n\nThis cannot be undone and removes them for everyone.'))return;
+ if(n>5&&!confirm('Please confirm again: '+n+' appointments will be deleted for good.'))return;
+ const {error}=await sb.from('appointments').delete().in('id',[...sel]);if(error){alert('Could not delete: '+error.message);return}
+ sel.clear();selMode=false;await load();updBulk()};
 /* change / cancel notices */
 const SENT=['Sent','Delivered','Read'],informed=x=>!!(x.wa_message_id||x.notice_wa_id||x.notice_kind||SENT.includes(x.status));
 function noticeMsg(a){const w=whenOf(a);if(!w)return '';const T=a.notice_kind==='cancelled'?C.TPL_CANCEL:C.TPL_CHANGED;if(!T)return 'Notice texts are missing: add templates.js to the website.';

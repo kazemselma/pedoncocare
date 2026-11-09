@@ -6,6 +6,21 @@
 .choices.four{grid-template-columns:repeat(2,1fr)}@media(min-width:650px){.choices.four{grid-template-columns:repeat(4,1fr)}}.hint.err{color:var(--red)}
 .pill.ok{background:#dff3e7;color:#18794e}.pill.bad{background:#fde4e1;color:#b42318}.check{display:flex;gap:10px;align-items:flex-start;font-size:13px}.check input{width:auto;margin-top:3px}
 .pw{position:relative}.pw input{padding-right:52px}.eye{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:42px;height:42px;padding:0;border:0;background:transparent;color:var(--muted);border-radius:10px;display:grid;place-items:center;flex:none}.eye:hover,.eye[aria-pressed="true"]{color:var(--teal);background:#edf8fa}
+.dash{display:grid;gap:14px}.dash .panel{margin-bottom:0}.dash h3{margin:0 0 10px;color:var(--navy);font-size:16px}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.dhead h2{margin:0}.dhead button{flex:none}
+.dcards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.dcard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;text-align:left;display:block;width:100%}
+.dcard b{display:block;font-size:30px;line-height:1.1;color:var(--navy)}.dcard span{font-size:12px;color:var(--muted)}
+.dcard.warn b{color:#b45309}.dcard.ok b{color:var(--green)}.dcard.bad b{color:var(--red)}
+.dgrid,.dcol{display:grid;gap:14px;align-content:start}
+.attn{border-color:#f5c9c4;background:#fffaf9}.drow{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:11px;background:#fff;padding:10px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.drow.warn{border-left-color:#d97706}.drow.bad{border-left-color:var(--red)}.drow.ok{border-left-color:var(--green)}.drow small{display:block;color:var(--muted);margin-top:2px}
+.pill.warn{background:#fef3c7;color:#92400e}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}.kpi{background:#f6fafb;border:1px solid var(--line);border-radius:11px;padding:10px}.kpi b{font-size:20px;color:var(--navy);display:block}.kpi span{font-size:11px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:2px;height:100px;overflow-x:auto;padding-bottom:2px}.bar{display:flex;flex-direction:column-reverse;flex:none}
+.hb{display:grid;grid-template-columns:96px 1fr 70px;gap:8px;align-items:center;font-size:13px;margin:5px 0}.hb i{display:block;height:12px;border-radius:6px;background:var(--teal)}
+@media(min-width:820px){.dcards{grid-template-columns:repeat(4,1fr)}.dgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.tabs button{padding:10px 2px;font-size:13px}}
 </style></head>
 <body>
 <header class="top"><div class="brand"><div class="logo">✚</div><div><strong>OncoCare</strong><small>Procedure Reminder · Pediatric Hematology & Oncology</small></div></div><h1>Procedure management</h1><p>Register procedures and send caregiver reminders on WhatsApp.</p></header>
@@ -16,8 +31,26 @@
 <section id="keyGate" class="panel hidden"><h2>Department privacy key</h2><p class="sub">Patient names and MRNs are scrambled with a secret key that is never sent online. Enter the department key once on this device. Ask the owner if you do not have it.</p><div class="field"><label for="keypass">Privacy key</label><div class="pw"><input id="keypass" type="password" autocomplete="off"><button type="button" class="eye" data-eye="keypass" aria-label="Show password" aria-pressed="false"><svg class="eo" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ec" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div></div><p id="keyErr" class="hint err"></p><button class="primary" id="keyBtn" type="button">Unlock</button></section>
 <div id="app" class="hidden">
 <section class="stats"><div class="stat"><b id="countAll">0</b><span>Registered</span></div><div class="stat"><b id="countPending">0</b><span>Pending</span></div><div class="stat"><b id="countSent">0</b><span>Sent</span></div></section>
-<nav class="tabs"><button class="active" data-tab="register">＋ Register</button><button data-tab="schedule">▤ Schedule</button><button data-tab="account" id="accTab">☺ Account</button></nav>
-<section id="register" class="panel"><h2 id="regTitle">Register a procedure</h2><p class="sub">Saved procedures are visible to all department staff.</p><p class="hint hidden" id="editNote"></p>
+<nav class="tabs"><button class="active" data-tab="dashboard">▦ Dashboard</button><button data-tab="register">＋ Register</button><button data-tab="schedule">▤ Schedule</button><button data-tab="account" id="accTab">☺ Account</button></nav>
+<section id="dashboard" class="dash">
+<div class="panel dhead"><div><h2>Welcome to OncoCare</h2><p class="sub" id="dDate" style="margin:2px 0"></p><p class="hint" id="dRefreshed" style="margin:0"></p></div><button class="btn" id="dRefresh">⟳ Refresh</button></div>
+<div class="dcards" id="dCards"></div>
+<div class="dgrid"><div class="dcol">
+<section class="panel"><h3>📅 Today's Procedures</h3><div id="dToday" class="list"></div></section>
+<section class="panel attn"><h3>⚠️ Requires Staff Attention</h3><div id="dAttn" class="list"></div></section>
+</div><div class="dcol">
+<section class="panel"><h3>💬 Communication Performance</h3><p class="hint" id="dCommNote" style="margin:0 0 8px"></p><div id="dComm"></div></section>
+<section class="panel"><h3>📊 Department Performance</h3>
+<div class="actions" style="margin-bottom:8px"><button class="btn" data-range="7">7 days</button><button class="btn primary" data-range="30">30 days</button><button class="btn" data-range="90">90 days</button><button class="btn" data-range="custom">Custom</button></div>
+<div id="dCustom" class="hidden actions" style="margin-bottom:8px"><input type="date" id="dFrom" style="width:auto"><input type="date" id="dTo" style="width:auto"></div>
+<p class="hint" id="dRangeNote" style="margin:0 0 8px"></p><div id="dKpis" class="kpis"></div>
+<p class="hint" style="margin:10px 0 4px"><b>Procedure volume per day</b> (teal = scheduled, red = cancelled)</p><div id="dBars"></div><p class="hint" id="dBarsNote" style="margin:4px 0 12px"></p>
+<p class="hint" style="margin:0 0 4px"><b>Procedure classification</b> (each appointment counted once)</p><div id="dClass"></div>
+<div id="dExportBox" class="hidden" style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><p class="hint" style="margin:0 0 6px"><b>Monthly summary (de-identified)</b></p><div class="actions"><input type="month" id="dMonth" style="width:auto"><button class="btn" id="dExport">Download summary (CSV)</button></div></div>
+</section>
+<section class="panel"><h3>🕘 Recent Activity</h3><div id="dAct" class="list"></div></section>
+</div></div></section>
+<section id="register" class="panel hidden"><h2 id="regTitle">Register a procedure</h2><p class="sub">Saved procedures are visible to all department staff.</p><p class="hint hidden" id="editNote"></p>
 <form id="form"><div class="formgrid"><div class="field"><label for="patient">Patient name *</label><input id="patient" required autocomplete="off"></div><div class="field"><label for="mrn">Medical record number (MRN) *</label><input id="mrn" required autocomplete="off"></div></div><p class="hint" id="privNote">🔒 Privacy: the name and MRN are processed on this device only. Online, only the initials and a scrambled code are saved.</p>
 <div class="field"><label for="phone">Caregiver WhatsApp number *</label><input id="phone" type="tel" inputmode="tel" autocomplete="off" required placeholder="07XX XXX XXXX"><p class="hint" id="phoneHint" style="margin:6px 0 0;font-weight:700"></p></div>
 <div class="field"><label>Procedure(s) <span style="font-weight:400;color:var(--muted)">– tap to select one or more</span></label><div class="choices four"><button type="button" class="choice selected" data-proc="BMA" aria-pressed="true"><strong>🩸 BMA</strong><span>Bone marrow aspiration</span></button><button type="button" class="choice" data-proc="IT" aria-pressed="false"><strong>💉 IT</strong><span>Intrathecal</span></button><button type="button" class="choice" data-proc="MRD" aria-pressed="false"><strong>🔬 MRD</strong><span>MRD testing</span></button><button type="button" class="choice" data-proc="HLA" aria-pressed="false"><strong>🧬 HLA</strong><span>HLA matching</span></button></div></div>
@@ -27,7 +60,8 @@
 <div class="fast" style="background:#edf8fa;border:1px solid #c8e5eb"><div class="row"><strong>Message preview</strong><span class="pill">Updates automatically</span></div><div id="draftMessage" class="preview" style="background:white;margin-bottom:0"></div></div>
 <div class="field"><label class="check"><input id="consent" type="checkbox" required><span>The caregiver agreed to receive WhatsApp reminders about this procedure. *</span></label></div>
 <button class="primary" type="submit" id="saveBtn">Save procedure</button><button class="btn hidden" type="button" id="cancelEdit" style="margin-top:8px">Cancel editing</button></form></section>
-<section id="schedule" class="panel hidden"><h2>Procedure schedule</h2><p class="sub">Reminders go out automatically at 8:00 AM the day before. Procedures marked “Send today” are due.</p><input id="search" type="search" placeholder="Search by name, MRN, initials or phone" autocomplete="off" style="margin-bottom:6px"><p class="hint" id="searchNote" style="margin:0 0 10px"></p><div class="actions" style="margin:6px 0 10px"><button class="btn primary" data-view="upcoming">Upcoming</button><button class="btn" data-view="past">Past</button><button class="btn" data-view="cancelled">Cancelled</button><button class="btn" data-view="all">All</button></div>
+<section id="schedule" class="panel hidden"><h2>Procedure schedule</h2><p class="sub">Reminders go out automatically at 8:00 AM the day before. Procedures marked “Send today” are due.</p><input id="search" type="search" placeholder="Search by name, MRN, initials or phone" autocomplete="off" style="margin-bottom:6px"><p class="hint" id="searchNote" style="margin:0 0 10px"></p><div id="filterBar" class="hidden drow warn" style="margin:6px 0 10px"><span id="filterText"></span><button class="btn" id="filterClear">✕ Clear filter</button></div>
+<div class="actions" style="margin:6px 0 10px"><button class="btn primary" data-view="upcoming">Upcoming</button><button class="btn" data-view="past">Past</button><button class="btn" data-view="cancelled">Cancelled</button><button class="btn" data-view="all">All</button></div>
 <div id="bulkBar" class="actions hidden" style="margin:0 0 10px"><button class="btn" id="selMode">Select</button><button class="btn hidden" id="selAll">Select all shown</button><button class="btn danger hidden" id="delSel">Delete selected (0)</button></div>
 <div id="appointments" class="list"></div>
 <div id="detail" class="hidden"><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><h2>Caregiver message</h2><div class="actions" style="margin:10px 0"><button class="btn" id="detailArabic" type="button">العربية</button><button class="btn" id="detailEnglish" type="button">English</button></div><div id="message" class="preview"></div><p id="detailErr" class="hint err"></p>
@@ -92,11 +126,11 @@ function updateDraft(){const a=draft(),w=whenOf(a),h=hlaOnly(a);$('dateHint').te
 $('langArabic').onclick=()=>{lang='Arabic';updateDraft()};$('langEnglish').onclick=()=>{lang='English';updateDraft()};
 ['patient','mrn','date','time','phone'].forEach(id=>$(id).addEventListener('input',updateDraft));
 document.querySelectorAll('[data-proc]').forEach(b=>b.onclick=()=>{const p=b.dataset.proc;procs=procs.includes(p)?procs.filter(x=>x!==p):procs.concat(p);b.classList.toggle('selected',procs.includes(p));b.setAttribute('aria-pressed',String(procs.includes(p)));updateDraft()});
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','schedule','account'].forEach(t=>$(t).classList.toggle('hidden',t!==b.dataset.tab))});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['dashboard','register','schedule','account'].forEach(t=>$(t).classList.toggle('hidden',t!==b.dataset.tab))});
 const waNum=p=>{const plus=p.trim().startsWith('+'),n=p.replace(/\D/g,'');if(plus)return n;if(n.startsWith('00'))return n.slice(2);if(n.startsWith('0'))return '964'+n.slice(1);if(n.length===10&&n[0]==='7')return '964'+n;return n};
 
 /* data */
-async function load(){const {data:rows,error}=await sb.from('appointments').select('*').order('proc_date').order('proc_time');if(error){alert('Could not load schedule: '+error.message);return}await Promise.all(rows.map(async r=>{r.phoneClear=KEY&&r.phone_enc?await decPhone(r.phone_enc):(r.phone||'')}));data=rows;render();if(selected)select(selected.id,true)}
+async function load(){const {data:rows,error}=await sb.from('appointments').select('*').order('proc_date').order('proc_time');if(error){alert('Could not load schedule: '+error.message);return}await Promise.all(rows.map(async r=>{r.phoneClear=KEY&&r.phone_enc?await decPhone(r.phone_enc):(r.phone||'')}));data=rows;render();renderDash();loadActivity();if(selected)select(selected.id,true)}
 function render(){updViewCounts();const live=data.filter(x=>!x.cancelled),c=s=>live.filter(x=>s.includes(x.status)).length;
  $('countAll').textContent=live.length;$('countPending').textContent=c(['Pending','Sending','Failed']);$('countSent').textContent=c(['Sent','Delivered','Read']);
  const root=$('appointments');root.innerHTML='';const rows=filtered();if(!data.length){root.innerHTML='<p class="hint">No procedures registered yet.</p>';return}if(!rows.length){root.innerHTML='<p class="hint">'+(Q?'No procedure matches your search.':'Nothing in this view.')+'</p>';return}
@@ -188,7 +222,7 @@ async function enter(session){lastSession=session;
  if(!KEY){$('app').classList.add('hidden');$('keyGate').classList.remove('hidden');return}
  $('keyGate').classList.add('hidden');
  $('who').textContent='Signed in as '+(st.full_name?st.full_name+' · ':'')+session.user.email+(me.is_admin?' (administrator)':'');
- await load();pushRefresh();$('admin').classList.toggle('hidden',!me.is_admin);$('phoneAdmin').classList.toggle('hidden',!me.is_owner);$('bulkBar').classList.toggle('hidden',!me.is_admin);if(me.is_admin)loadStaff();
+ await load();pushRefresh();$('admin').classList.toggle('hidden',!me.is_admin);$('phoneAdmin').classList.toggle('hidden',!me.is_owner);$('bulkBar').classList.toggle('hidden',!me.is_admin);$('dExportBox').classList.toggle('hidden',!me.is_admin);if(me.is_admin)loadStaff();
  if(channel)sb.removeChannel(channel);channel=sb.channel('live').on('postgres_changes',{event:'*',schema:'public',table:'appointments'},load).on('postgres_changes',{event:'*',schema:'public',table:'staff'},()=>{if(me?.is_admin)loadStaff()}).subscribe()}
 document.querySelectorAll('[data-eye]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.eye),show=i.type==='password';i.type=show?'text':'password';
  b.setAttribute('aria-pressed',String(show));b.setAttribute('aria-label',show?'Hide password':'Show password');b.querySelector('.eo').style.display=show?'none':'';b.querySelector('.ec').style.display=show?'':'none';i.focus()}));
@@ -273,11 +307,11 @@ const normName=t=>dig(t).normalize('NFKD').replace(/[\u0300-\u036f\u064B-\u065F\
 const normMrn=t=>dig(t).toLowerCase().replace(/[^0-9a-z]/g,'');
 const initials=t=>t.trim().split(/\s+/).map(w=>(w.match(/\p{L}/u)||[''])[0].toUpperCase()).filter(Boolean).join('.')+'.';
 const IR=t=>t.replace(/[^\p{L}]/gu,'').toUpperCase();
-let listView='upcoming',selMode=false;const sel=new Set();
+let listView='upcoming',selMode=false,LF=null;const sel=new Set();
 const byView=()=>{const t=baghdad(0);return data.filter(x=>listView==='all'||(listView==='cancelled'?x.cancelled:listView==='past'?!x.cancelled&&x.proc_date<t:!x.cancelled&&x.proc_date>=t))};
 function updViewCounts(){const t=baghdad(0),c={upcoming:0,past:0,cancelled:0,all:data.length};data.forEach(x=>{if(x.cancelled)c.cancelled++;else if(x.proc_date<t)c.past++;else c.upcoming++});
  document.querySelectorAll('[data-view]').forEach(b=>b.textContent=({upcoming:'Upcoming',past:'Past',cancelled:'Cancelled',all:'All'})[b.dataset.view]+' ('+c[b.dataset.view]+')')}
-function filtered(){$('searchNote').textContent='';if(!Q)return byView();
+function filtered(){$('searchNote').textContent='';if(!Q)return LF?data.filter(LF.fn):byView();
  const ex=data.filter(x=>(x.mrn_hash&&x.mrn_hash===Q.mh)||(x.name_hash&&x.name_hash===Q.nh)||(Q.dg&&(x.phoneClear||'').replace(/\D/g,'').includes(Q.dg)));
  if(ex.length){$('searchNote').textContent=ex.length+' exact match'+(ex.length>1?'es':'')+'.';return ex}
  const ini=Q.ini?data.filter(x=>IR(x.patient_initials||'')===Q.ini):[];
@@ -303,13 +337,109 @@ $('encOld').onclick=async()=>{const old=data.filter(x=>x.phone&&!x.phone_enc);if
  if(!confirm('Encrypt '+old.length+' saved phone number(s)? The readable copies will be removed.'))return;
  for(const x of old){const {error}=await sb.from('appointments').update({phone_enc:await encPhone(x.phone),phone:null}).eq('id',x.id);if(error){alert('Stopped: '+error.message);return}}
  await load();alert('Done. '+old.length+' number(s) are now encrypted.')};
+/* ===== DASHBOARD (calculations first, screen code after) ===== */
+const SENT_OK=['Sent','Delivered','Read'],DELIV=['Delivered','Read'],WAIT=['Pending','Sending'];
+const today0=()=>baghdad(0),tomorrow0=()=>baghdad(86400e3);
+const bgDay=ts=>ts?new Date(new Date(ts).getTime()+3*3600e3).toISOString().slice(0,10):'';
+const nowHour=()=>new Date(Date.now()+3*3600e3).getUTCHours();
+const addDay=iso=>new Date(new Date(iso+'T12:00:00Z').getTime()+864e5).toISOString().slice(0,10);
+const procLabel=a=>ORDER.filter(x=>a.procs.includes(x)).join(' + ');
+const needsFast=a=>!(a.procs.length===1&&a.procs[0]==='HLA');
+const clock=t=>{const h=+t.slice(0,2);return `${h%12||12}:${t.slice(3,5)} ${h<12?'AM':'PM'}`};
+function remStatus(a){if(a.cancelled)return['Cancelled',''];if(a.status==='Failed')return['Failed','bad'];
+ if(DELIV.includes(a.status))return[a.status==='Read'?'Delivered · read':'Delivered','ok'];
+ if(a.status==='Sent')return[a.wa_message_id?'Sent (submitted)':'Sent (manual)','ok'];
+ return[a.status==='Sending'?'Sending…':'Pending','warn']}
+function cardDefs(){const t=today0();return[
+ {l:"Today's procedures",i:'📅',c:'',f:x=>!x.cancelled&&x.proc_date===t},
+ {l:'Pending reminders',i:'⏳',c:'warn',f:x=>!x.cancelled&&x.proc_date>=t&&WAIT.includes(x.status)},
+ {l:'Reminders sent today',i:'✅',c:'ok',f:x=>!x.cancelled&&SENT_OK.includes(x.status)&&bgDay(x.sent_at)===t},
+ {l:'Cancelled for today',i:'🚫',c:'bad',f:x=>x.cancelled&&x.proc_date===t}]}
+function alerts(){const t=today0(),tm=tomorrow0(),late=nowHour()>=8,out=[],al=(a,sev,why,btn)=>out.push({a,sev,why,btn});
+ data.forEach(a=>{
+  if(a.cancelled){if(a.proc_date>=t&&a.notice_kind==='cancelled'&&['Needed','Failed'].includes(a.notice_status))al(a,'bad','Cancelled – family not notified','Open & notify');return}
+  if(a.proc_date<t)return;
+  if(a.status==='Failed')al(a,'bad','Reminder failed – retry sending','Open & retry');
+  else if(a.status==='Pending'&&(a.proc_date===t||(a.proc_date===tm&&late)))al(a,'warn',a.proc_date===t?'Appointment today – no reminder sent':'Appointment tomorrow – reminder not sent yet','Open & send');
+  if(a.notice_kind==='rescheduled'&&['Needed','Failed'].includes(a.notice_status))al(a,'bad','Appointment changed – family not notified','Open & notify');
+  if(!a.phone_enc&&!a.phone)al(a,'bad','Incomplete: caregiver phone missing','Open');
+  else if(!a.mrn_hash||!a.name_hash)al(a,'warn','Incomplete: MRN or name code not saved (cannot be searched)','Open')});
+ return out.sort((x,y)=>(x.sev==='bad'?0:1)-(y.sev==='bad'?0:1)||(x.a.proc_date+x.a.proc_time).localeCompare(y.a.proc_date+y.a.proc_time))}
+function stats(from,to){const tm=tomorrow0(),A=data.filter(a=>a.proc_date>=from&&a.proc_date<=to),act=A.filter(a=>!a.cancelled),can=A.filter(a=>a.cancelled);
+ const due=act.filter(a=>a.proc_date<=tm&&a.consent!==false),subm=due.filter(a=>SENT_OK.includes(a.status)),failed=due.filter(a=>a.status==='Failed'),deliv=due.filter(a=>DELIV.includes(a.status));
+ const manual=subm.filter(a=>!a.wa_message_id),todo=due.filter(a=>WAIT.includes(a.status)),tried=subm.length+failed.length;
+ const days={};for(let d=from,n=0;d<=to&&n<400;d=addDay(d),n++)days[d]=[0,0];
+ act.forEach(a=>days[a.proc_date]&&days[a.proc_date][0]++);can.forEach(a=>days[a.proc_date]&&days[a.proc_date][1]++);
+ const cls={};act.forEach(a=>{const k=procLabel(a);cls[k]=(cls[k]||0)+1});
+ return{total:A.length,active:act.length,cancelled:can.length,rate:A.length?Math.round(100*can.length/A.length):null,
+  upcoming:data.filter(a=>!a.cancelled&&a.proc_date>=today0()).length,patients:new Set(act.filter(a=>a.mrn_hash).map(a=>a.mrn_hash)).size,
+  due:due.length,subm:subm.length,deliv:deliv.length,failed:failed.length,manual:manual.length,todo:todo.length,
+  success:tried?Math.round(100*subm.length/tried):null,coverage:due.length?Math.round(100*subm.length/due.length):null,
+  auto:data.some(a=>a.wa_message_id),days,cls}}
+/* ===== END CALCULATIONS ===== */
+let rng={mode:'30'},ACT=[];
+const E=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+function rangeDates(){const t=today0();if(rng.mode==='custom'&&rng.from&&rng.to){let [a,b]=rng.from<=rng.to?[rng.from,rng.to]:[rng.to,rng.from];return[a,b]}const n=+rng.mode;return[baghdad(-(n-1)*86400e3),t]}
+const dmy=i=>{const [y,m,d]=i.split('-');return `${+d}/${+m}/${y}`};
+function openAppt(id){document.querySelector('[data-tab="schedule"]').click();document.querySelector('[data-view="all"]').click();select(id);$('detail').scrollIntoView({behavior:'smooth'})}
+function openSchedule(label,fn){document.querySelector('[data-tab="schedule"]').click();$('search').value='';Q=null;LF={label,fn};$('filterText').textContent='Filter: '+label;$('filterBar').classList.remove('hidden');render()}
+$('filterClear').onclick=()=>{LF=null;$('filterBar').classList.add('hidden');render()};
+function apptRow(a,sub,cls,btn){const r=E('div','drow'+(cls?' '+cls:'')),l=E('div'),t=E('strong',null,(a.patient_initials||'—')+' · '+procLabel(a));l.appendChild(t);
+ l.appendChild(E('small',null,sub));const b=E('button','btn',btn||'View');b.style.flex='none';b.onclick=()=>openAppt(a.id);r.append(l,b);return r}
+function renderDash(){
+ $('dDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:TZ});
+ $('dRefreshed').textContent='Last refreshed: '+fT(new Date(),false);
+ const cards=$('dCards');cards.innerHTML='';cardDefs().forEach(d=>{const b=E('button','dcard '+d.c);b.append(E('b',null,String(data.filter(d.f).length)),E('span',null,d.i+' '+d.l));b.onclick=()=>openSchedule(d.l,d.f);cards.appendChild(b)});
+ const t=today0(),td=$('dToday');td.innerHTML='';const tl=data.filter(a=>a.proc_date===t).sort((x,y)=>x.proc_time.localeCompare(y.proc_time));
+ if(!tl.length)td.appendChild(E('p','hint','No procedures are scheduled for today.'));
+ tl.forEach(a=>{const [lab,c]=remStatus(a),r=apptRow(a,clock(a.proc_time)+' · '+(needsFast(a)?'🍽 Fasting required':'No fasting')+' · Reminder: '+lab,c);if(a.cancelled)r.style.opacity='.7';td.appendChild(r)});
+ const at=$('dAttn');at.innerHTML='';const al=alerts();if(!al.length)at.appendChild(E('p','hint','✓ Nothing needs attention right now.'));
+ al.forEach(x=>at.appendChild(apptRow(x.a,dmy(x.a.proc_date)+' '+clock(x.a.proc_time)+' · '+x.why,x.sev,x.btn)));
+ const [from,to]=rangeDates(),S=stats(from,to);
+ $('dRangeNote').textContent='Appointments dated '+dmy(from)+' to '+dmy(to)+' (Iraq time). Counts are appointments, not patients.';
+ $('dCommNote').textContent='Period: '+dmy(from)+' to '+dmy(to)+'. “Sent” means submitted to WhatsApp, not confirmed delivery.';
+ const K=(l,v)=>{const k=E('div','kpi');k.append(E('b',null,String(v)),E('span',null,l));return k},NA='Not available',pc=v=>v===null?NA:v+'%';
+ const cm=$('dComm');cm.innerHTML='';const g=E('div','kpis');
+ [['Reminders due',S.due],['Successfully submitted',S.subm],['Confirmed deliveries',S.auto?S.deliv:NA],['Failed',S.failed],['Sent manually',S.manual],['Not yet attempted',S.todo],['Sending success (submitted ÷ attempted)',pc(S.success)],['Coverage (submitted ÷ due)',pc(S.coverage)]].forEach(x=>g.appendChild(K(x[0],x[1])));cm.appendChild(g);
+ if(!S.auto)cm.appendChild(E('p','hint','Delivery confirmation is not available until automatic WhatsApp sending is in use.'));
+ const kp=$('dKpis');kp.innerHTML='';[['Total procedures registered',S.total],['Completed procedures',NA+' (not recorded)'],['Cancelled',S.cancelled+(S.rate===null?'':' ('+S.rate+'%)')],['Upcoming (all future dates)',S.upcoming],['Reminders sent',S.subm],['Reminders failed',S.failed],['Missed appointments',NA+' (not recorded)'],['Individual patients',S.patients]].forEach(x=>kp.appendChild(K(x[0],x[1])));
+ const bars=$('dBars');bars.innerHTML='';const ds=Object.keys(S.days),mx=Math.max(1,...ds.map(d=>S.days[d][0]+S.days[d][1])),w=Math.max(6,Math.min(26,Math.floor(560/Math.max(ds.length,1))));
+ const bw=E('div','bars');ds.forEach(d=>{const [a,c]=S.days[d],b=E('div','bar');b.style.width=w+'px';b.title=dmy(d)+': '+a+' scheduled, '+c+' cancelled';
+  if(a){const s1=E('div');s1.style.cssText='background:var(--teal);height:'+Math.round(86*a/mx)+'px';b.appendChild(s1)}
+  if(c){const s2=E('div');s2.style.cssText='background:var(--red);height:'+Math.round(86*c/mx)+'px';b.appendChild(s2)}bw.appendChild(b)});bars.appendChild(bw);
+ $('dBarsNote').textContent=S.total?dmy(from)+' → '+dmy(to)+' · busiest day: '+mx+' procedure'+(mx>1?'s':''):'No procedures in this period.';
+ const cl=$('dClass');cl.innerHTML='';const ce=Object.entries(S.cls).sort((a,b)=>b[1]-a[1]);if(!ce.length)cl.appendChild(E('p','hint','No procedures in this period.'));
+ ce.forEach(([k,n])=>{const r=E('div','hb'),i=E('i');i.style.width=Math.round(100*n/S.active)+'%';const bx=E('div');bx.appendChild(i);r.append(E('span',null,k),bx,E('span',null,n+' ('+Math.round(100*n/S.active)+'%)'));cl.appendChild(r)});
+ renderAct()}
+const EVT={registered:'New appointment registered',edited:'Appointment edited',rescheduled:'Appointment rescheduled',cancelled:'Appointment cancelled',deleted:'Appointment deleted',reminder_sent:'Reminder submitted to WhatsApp',reminder_marked_sent:'Reminder marked as sent (manual)',reminder_failed:'Reminder failed',notice_sent:'Change/cancellation notice sent',notice_failed:'Notice failed',access_requested:'Staff access requested',access_approved:'Staff access approved',access_declined:'Staff access declined',access_removed:'Staff access removed'};
+async function loadActivity(){const {data:r,error}=await sb.from('activity_log').select('*').order('at',{ascending:false}).limit(30);ACT=error?null:r;renderAct()}
+function renderAct(){const box=$('dAct');box.innerHTML='';
+ if(ACT===null){box.appendChild(E('p','hint','The activity log is not set up yet. Run dashboard.sql in Supabase.'));return}
+ if(!ACT.length){box.appendChild(E('p','hint','No activity recorded yet.'));return}
+ ACT.forEach(e=>{const r=E('div','drow'),l=E('div'),isAcc=e.event.startsWith('access_');
+  l.appendChild(E('strong',null,EVT[e.event]||e.event));
+  const what=isAcc?(e.detail||''):[e.initials,e.procs&&e.procs.length?ORDER.filter(x=>e.procs.includes(x)).join(' + '):'',e.proc_date?dmy(e.proc_date)+' '+clock(e.proc_time):''].filter(Boolean).join(' · ');
+  if(what)l.appendChild(E('small',null,what));
+  l.appendChild(E('small',null,new Date(e.at).toLocaleString('en-GB',{timeZone:TZ,day:'numeric',month:'short',hour:'numeric',minute:'2-digit',hour12:true})+(e.actor_name?' · '+e.actor_name:'')));r.appendChild(l);box.appendChild(r)})}
+$('dRefresh').onclick=async()=>{$('dRefresh').disabled=true;await load();$('dRefresh').disabled=false};
+document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{rng.mode=b.dataset.range;document.querySelectorAll('[data-range]').forEach(x=>x.classList.toggle('primary',x===b));$('dCustom').classList.toggle('hidden',rng.mode!=='custom');
+ if(rng.mode==='custom'){rng.from=rng.from||baghdad(-29*86400e3);rng.to=rng.to||today0();$('dFrom').value=rng.from;$('dTo').value=rng.to}renderDash()});
+['dFrom','dTo'].forEach(id=>$(id).onchange=()=>{rng.from=$('dFrom').value;rng.to=$('dTo').value;if(rng.from&&rng.to)renderDash()});
+$('dMonth').value=today0().slice(0,7);
+$('dExport').onclick=()=>{const m=$('dMonth').value;if(!m)return;const [y,mo]=m.split('-'),from=m+'-01',to=m+'-'+String(new Date(+y,+mo,0).getDate()).padStart(2,'0'),S=stats(from,to),NA='Not recorded',q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+ const rows=[['OncoCare monthly summary (de-identified: no names, MRNs or phone numbers)'],['Period',from+' to '+to+' (Iraq time)'],['Generated',new Date().toISOString()],[],['Metric','Value'],
+  ['Appointments registered',S.total],['Scheduled (not cancelled)',S.active],['Cancelled',S.cancelled],['Cancellation rate %',S.rate===null?'':S.rate],['Individual patients (distinct MRN codes)',S.patients],['Completed procedures',NA],['Missed appointments',NA],
+  ['Reminders due',S.due],['Reminders submitted',S.subm],['Confirmed deliveries',S.auto?S.deliv:'Not available'],['Reminders failed',S.failed],['Reminders sent manually',S.manual],['Reminders not attempted',S.todo],['Sending success % (submitted / attempted)',S.success===null?'':S.success],[],['Classification','Appointments'],
+  ...Object.entries(S.cls).sort((a,b)=>b[1]-a[1]),[],['Date','Scheduled','Cancelled'],...Object.keys(S.days).map(d=>[d,S.days[d][0],S.days[d][1]])];
+ const blob=new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='OncoCare-summary-'+m+'.csv';a.click()};
+setInterval(()=>{if(me&&!$('dashboard').classList.contains('hidden'))renderDash()},300000);
 /* list views and bulk delete (administrators) */
 const updBulk=()=>{$('selAll').classList.toggle('hidden',!selMode);$('delSel').classList.toggle('hidden',!selMode);$('selMode').textContent=selMode?'Done selecting':'Select';$('delSel').textContent='Delete selected ('+sel.size+')';$('delSel').disabled=!sel.size};
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{listView=b.dataset.view;sel.clear();document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('primary',x===b));render();updBulk()});
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{LF=null;$('filterBar').classList.add('hidden');listView=b.dataset.view;sel.clear();document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('primary',x===b));render();updBulk()});
 $('selMode').onclick=()=>{selMode=!selMode;sel.clear();updBulk();render()};
 $('selAll').onclick=()=>{filtered().forEach(a=>sel.add(a.id));updBulk();render()};
 $('delSel').onclick=async()=>{const n=sel.size;if(!n)return;
- if(!confirm('Permanently delete '+n+' appointment'+(n>1?'s':'')+'?\n\nThis cannot be undone and removes them for everyone.'))return;
+ if(!confirm('Permanently delete '+n+' appointment'+(n>1?'s':'')+'?\n\nThis cannot be undone and removes them for everyone. They will also stop counting in the dashboard statistics (the activity log keeps a record of the deletion).'))return;
  if(n>5&&!confirm('Please confirm again: '+n+' appointments will be deleted for good.'))return;
  const {error}=await sb.from('appointments').delete().in('id',[...sel]);if(error){alert('Could not delete: '+error.message);return}
  sel.clear();selMode=false;await load();updBulk()};

@@ -21,6 +21,39 @@
 .hb{display:grid;grid-template-columns:96px 1fr 70px;gap:8px;align-items:center;font-size:13px;margin:5px 0}.hb i{display:block;height:12px;border-radius:6px;background:var(--teal)}
 @media(min-width:820px){.dcards{grid-template-columns:repeat(4,1fr)}.dgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:420px){.tabs button{padding:10px 2px;font-size:13px}}
+
+/* ===== Mobile-first layout (Priority 1) ===== */
+html{-webkit-text-size-adjust:100%}*,*::before,*::after{box-sizing:border-box}
+button,a,input,select,textarea,summary{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+img,svg,canvas,textarea{max-width:100%}
+.panel,.list,.dash,.dgrid,.dcol,.dcards,.kpis,.drow,.item,.field,.formgrid>*{min-width:0}
+.dgrid{grid-template-columns:minmax(0,1fr)}
+.drow,.item{overflow-wrap:anywhere}
+input,select,textarea{font-size:16px}
+input[type=search],input[type=date],input[type=month],input[type=time],textarea{width:100%;min-height:46px;padding:11px 12px;border:1px solid #cbd9e0;border-radius:9px;background:#fff;font:inherit;font-size:16px;color:var(--ink)}
+button,.btn{min-height:46px}
+.eye{width:44px;height:44px;inset-inline-end:4px;right:auto}.pw input{padding-right:12px;padding-inline-end:52px}
+.check{min-height:48px;align-items:center;padding:4px 0}.check input{width:22px;height:22px;margin:0;flex:none}
+.item{display:block;width:100%;text-align:start;padding:12px 14px}.it{display:flex;justify-content:space-between;align-items:center;gap:8px}.it strong{font-size:17px}
+.ip{display:block;font-weight:650;margin-top:3px}.id,.ik{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.drow{border-left:0;border-inline-start:4px solid var(--line);flex-wrap:wrap}.drow>div{flex:1 1 180px;min-width:0}
+.drow.warn{border-inline-start-color:#d97706}.drow.bad{border-inline-start-color:var(--red)}.drow.ok{border-inline-start-color:var(--green)}
+.dcard{text-align:start}.preview{unicode-bidi:plaintext;text-align:start;overflow-wrap:anywhere}#dBars,.bars{direction:ltr}.bars{max-width:100%}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.seg button{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 2px;font-size:13px;line-height:1.25;flex:none}.seg small{display:block;font-size:12px;opacity:.85}
+#detail .actions,#noticeBox .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#sendNow,#sendNotice{grid-column:1/-1}
+.fold>summary,.fold2>summary{cursor:pointer;font-weight:800;color:var(--navy);font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:46px}
+.fold>summary::-webkit-details-marker,.fold2>summary::-webkit-details-marker{display:none}.fold>summary::after,.fold2>summary::after{content:'▾';color:var(--muted);transition:transform .15s}.fold[open]>summary::after,.fold2[open]>summary::after{transform:rotate(180deg)}
+.fold[open]>summary{margin-bottom:8px}.fold2{border-top:1px solid var(--line);margin-top:6px}.fold2>summary{font-size:15px}
+.tabs button i{font-style:normal;margin-inline-end:6px}
+@media(min-width:820px){.dgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.formgrid{grid-template-columns:minmax(0,1fr)}.stats{gap:6px}.stat{padding:10px}.stat b{font-size:20px}}
+@media(max-width:700px){
+ .top{padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top))}.top h1{font-size:19px;margin:10px 0 0}.top>p{display:none}
+ .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin:0;background:#fff;border-top:1px solid var(--line);padding:6px 6px max(6px,env(safe-area-inset-bottom));box-shadow:0 -4px 14px rgba(18,60,84,.08)}
+ .tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 2px;font-size:12px;border:0;background:transparent;color:var(--muted);flex:none}
+ .tabs button i{font-size:21px;line-height:1;margin:0}.tabs button.active{background:#e3f1f4;color:var(--teal)}
+ .wrap{padding-bottom:96px}#saveBtn{position:sticky;bottom:78px;z-index:5;box-shadow:0 6px 18px rgba(18,60,84,.28)}
+}
 </style></head>
 <body>
 <header class="top"><div class="brand"><div class="logo">✚</div><div><strong>OncoCare</strong><small>Procedure Reminder · Pediatric Hematology & Oncology</small></div></div><h1>Procedure management</h1><p>Register procedures and send caregiver reminders on WhatsApp.</p></header>
@@ -31,7 +64,7 @@
 <section id="keyGate" class="panel hidden"><h2>Department privacy key</h2><p class="sub">Patient names and MRNs are scrambled with a secret key that is never sent online. Enter the department key once on this device. Ask the owner if you do not have it.</p><div class="field"><label for="keypass">Privacy key</label><div class="pw"><input id="keypass" type="password" autocomplete="off"><button type="button" class="eye" data-eye="keypass" aria-label="Show password" aria-pressed="false"><svg class="eo" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ec" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div></div><p id="keyErr" class="hint err"></p><button class="primary" id="keyBtn" type="button">Unlock</button></section>
 <div id="app" class="hidden">
 <section class="stats"><div class="stat"><b id="countAll">0</b><span>Registered</span></div><div class="stat"><b id="countPending">0</b><span>Pending</span></div><div class="stat"><b id="countSent">0</b><span>Sent</span></div></section>
-<nav class="tabs"><button class="active" data-tab="dashboard">▦ Dashboard</button><button data-tab="register">＋ Register</button><button data-tab="schedule">▤ Schedule</button><button data-tab="account" id="accTab">☺ Account</button></nav>
+<nav class="tabs"><button class="active" data-tab="dashboard"><i>▦</i><span>Dashboard</span></button><button data-tab="register"><i>＋</i><span>Register</span></button><button data-tab="schedule"><i>▤</i><span>Schedule</span></button><button data-tab="account" id="accTab"><i>☺</i><span>Account</span></button></nav>
 <section id="dashboard" class="dash">
 <div class="panel dhead"><div><h2>Welcome to OncoCare</h2><p class="sub" id="dDate" style="margin:2px 0"></p><p class="hint" id="dRefreshed" style="margin:0"></p></div><button class="btn" id="dRefresh">⟳ Refresh</button></div>
 <div class="dcards" id="dCards"></div>
@@ -39,16 +72,16 @@
 <section class="panel"><h3>📅 Today's Procedures</h3><div id="dToday" class="list"></div></section>
 <section class="panel attn"><h3>⚠️ Requires Staff Attention</h3><div id="dAttn" class="list"></div></section>
 </div><div class="dcol">
-<section class="panel"><h3>💬 Communication Performance</h3><p class="hint" id="dCommNote" style="margin:0 0 8px"></p><div id="dComm"></div></section>
-<section class="panel"><h3>📊 Department Performance</h3>
-<div class="actions" style="margin-bottom:8px"><button class="btn" data-range="7">7 days</button><button class="btn primary" data-range="30">30 days</button><button class="btn" data-range="90">90 days</button><button class="btn" data-range="custom">Custom</button></div>
+<details class="panel fold" data-open="1"><summary>💬 Communication Performance</summary><p class="hint" id="dCommNote" style="margin:0 0 8px"></p><div id="dComm"></div></details>
+<details class="panel fold"><summary>📊 Department Performance</summary>
+<div class="seg" style="margin-bottom:8px"><button class="btn" data-range="7">7 days</button><button class="btn primary" data-range="30">30 days</button><button class="btn" data-range="90">90 days</button><button class="btn" data-range="custom">Custom</button></div>
 <div id="dCustom" class="hidden actions" style="margin-bottom:8px"><input type="date" id="dFrom" style="width:auto"><input type="date" id="dTo" style="width:auto"></div>
 <p class="hint" id="dRangeNote" style="margin:0 0 8px"></p><div id="dKpis" class="kpis"></div>
 <p class="hint" style="margin:10px 0 4px"><b>Procedure volume per day</b> (teal = scheduled, red = cancelled)</p><div id="dBars"></div><p class="hint" id="dBarsNote" style="margin:4px 0 12px"></p>
 <p class="hint" style="margin:0 0 4px"><b>Procedure classification</b> (each appointment counted once)</p><div id="dClass"></div>
 <div id="dExportBox" class="hidden" style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><p class="hint" style="margin:0 0 6px"><b>Monthly summary (de-identified)</b></p><div class="actions"><input type="month" id="dMonth" style="width:auto"><button class="btn" id="dExport">Download summary (CSV)</button></div></div>
-</section>
-<section class="panel"><h3>🕘 Recent Activity</h3><div id="dAct" class="list"></div></section>
+</details>
+<details class="panel fold"><summary>🕘 Recent Activity</summary><div id="dAct" class="list"></div></details>
 </div></div></section>
 <section id="register" class="panel hidden"><h2 id="regTitle">Register a procedure</h2><p class="sub">Saved procedures are visible to all department staff.</p><p class="hint hidden" id="editNote"></p>
 <form id="form"><div class="formgrid"><div class="field"><label for="patient">Patient name *</label><input id="patient" required autocomplete="off"></div><div class="field"><label for="mrn">Medical record number (MRN) *</label><input id="mrn" required autocomplete="off"></div></div><p class="hint" id="privNote">🔒 Privacy: the name and MRN are processed on this device only. Online, only the initials and a scrambled code are saved.</p>
@@ -61,17 +94,17 @@
 <div class="field"><label class="check"><input id="consent" type="checkbox" required><span>The caregiver agreed to receive WhatsApp reminders about this procedure. *</span></label></div>
 <button class="primary" type="submit" id="saveBtn">Save procedure</button><button class="btn hidden" type="button" id="cancelEdit" style="margin-top:8px">Cancel editing</button></form></section>
 <section id="schedule" class="panel hidden"><h2>Procedure schedule</h2><p class="sub">Reminders go out automatically at 8:00 AM the day before. Procedures marked “Send today” are due.</p><input id="search" type="search" placeholder="Search by name, MRN, initials or phone" autocomplete="off" style="margin-bottom:6px"><p class="hint" id="searchNote" style="margin:0 0 10px"></p><div id="filterBar" class="hidden drow warn" style="margin:6px 0 10px"><span id="filterText"></span><button class="btn" id="filterClear">✕ Clear filter</button></div>
-<div class="actions" style="margin:6px 0 10px"><button class="btn primary" data-view="upcoming">Upcoming</button><button class="btn" data-view="past">Past</button><button class="btn" data-view="cancelled">Cancelled</button><button class="btn" data-view="all">All</button></div>
+<div class="seg" style="margin:6px 0 10px"><button class="btn primary" data-view="upcoming">Upcoming</button><button class="btn" data-view="past">Past</button><button class="btn" data-view="cancelled">Cancelled</button><button class="btn" data-view="all">All</button></div>
 <div id="bulkBar" class="actions hidden" style="margin:0 0 10px"><button class="btn" id="selMode">Select</button><button class="btn hidden" id="selAll">Select all shown</button><button class="btn danger hidden" id="delSel">Delete selected (0)</button></div>
 <div id="appointments" class="list"></div>
 <div id="detail" class="hidden"><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><h2>Caregiver message</h2><div class="actions" style="margin:10px 0"><button class="btn" id="detailArabic" type="button">العربية</button><button class="btn" id="detailEnglish" type="button">English</button></div><div id="message" class="preview"></div><p id="detailErr" class="hint err"></p>
 <div class="actions"><button class="btn primary" id="sendNow">Send now on WhatsApp</button><button class="btn" id="copy">Copy message</button><button class="btn" id="wa">Open WhatsApp (manual)</button><button class="btn hidden" id="markSent">Mark as sent (manual)</button><button class="btn" id="edit">Edit</button><button class="btn" id="cancelProc">Cancel procedure</button><button class="btn danger" id="remove">Delete</button></div>
 <p class="hint">“Send now” uses the approved template and updates the status automatically. Manual WhatsApp opens a draft from your own phone and is not tracked.</p>
 <div id="noticeBox" class="hidden" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px;margin-top:14px"><strong id="noticeTitle"></strong><div id="noticeMsg" class="preview" style="background:white;margin-top:10px"></div><p id="noticeErr" class="hint err"></p><div class="actions"><button class="btn primary" id="sendNotice">Send notice on WhatsApp</button><button class="btn" id="copyNotice">Copy</button><button class="btn" id="waNotice">Open WhatsApp (manual)</button><button class="btn" id="markNotice">Mark as sent</button></div></div></div></section>
-<section id="account" class="panel hidden"><h2>Account</h2><p class="sub" id="who"></p><button class="btn" id="signOut">Sign out</button> <button class="btn" id="forgetKey">Forget privacy key on this device</button>
-<div style="margin:14px 0"><h2 style="font-size:16px;margin:0 0 4px">Share this app</h2><p class="sub">Colleagues can scan this code with their phone camera. New staff tap “Request access” and wait for approval.</p><div style="text-align:center"><img id="qrImg" alt="QR code to open OncoCare" style="width:220px;height:220px;border:1px solid var(--line);border-radius:12px;cursor:zoom-in"></div><p class="hint" id="qrLink" style="text-align:center;word-break:break-all"></p><div class="actions"><button class="btn" id="qrBig">Show full screen</button><button class="btn" id="qrCopy">Copy link</button><button class="btn" id="qrSave">Download QR picture</button></div></div>
+<section id="account" class="panel hidden"><h2>Account</h2><p class="sub" id="who"></p><div class="actions"><button class="btn" id="signOut">Sign out</button><button class="btn" id="forgetKey">Forget privacy key on this device</button></div>
+<details class="fold2"><summary>Share this app (QR code)</summary><p class="sub">Colleagues can scan this code with their phone camera. New staff tap “Request access” and wait for approval.</p><div style="text-align:center"><img id="qrImg" alt="QR code to open OncoCare" style="width:220px;height:220px;border:1px solid var(--line);border-radius:12px;cursor:zoom-in"></div><p class="hint" id="qrLink" style="text-align:center;word-break:break-all"></p><div class="actions"><button class="btn" id="qrBig">Show full screen</button><button class="btn" id="qrCopy">Copy link</button><button class="btn" id="qrSave">Download QR picture</button></div></details>
 <div style="margin:14px 0"><h2 style="font-size:16px;margin:0 0 4px">Phone notifications</h2><p class="sub" id="pushNote"></p><button class="btn" id="pushBtn">Turn on notifications on this device</button></div>
-<div id="phoneAdmin" class="hidden" style="margin:14px 0"><h2 style="font-size:16px;margin:0 0 4px">Phone number protection (owner)</h2><p class="sub">Caregiver numbers are saved encrypted. The sending program needs a server key to read them when it sends a message.</p><div class="actions"><button class="btn" id="showSrvKey">Show server key</button><button class="btn" id="encOld">Encrypt numbers saved earlier</button></div><textarea id="srvKey" readonly rows="2" class="hidden" style="width:100%;margin-top:8px;font-family:monospace"></textarea><p class="hint hidden" id="srvKeyHint">Copy this key. In Supabase go to Edge Functions, then Secrets, and add a secret named PHONE_KEY with this value. Keep it private.</p></div>
+<details id="phoneAdmin" class="hidden fold2"><summary>Phone number protection (owner)</summary><p class="sub">Caregiver numbers are saved encrypted. The sending program needs a server key to read them when it sends a message.</p><div class="actions"><button class="btn" id="showSrvKey">Show server key</button><button class="btn" id="encOld">Encrypt numbers saved earlier</button></div><textarea id="srvKey" readonly rows="2" class="hidden" style="width:100%;margin-top:8px;font-family:monospace"></textarea><p class="hint hidden" id="srvKeyHint">Copy this key. In Supabase go to Edge Functions, then Secrets, and add a secret named PHONE_KEY with this value. Keep it private.</p></details>
 <div id="admin" class="hidden"><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><h2>Staff access</h2><p class="sub">Approve colleagues who asked for access. Pending requests are listed first.</p><div id="staffList" class="list"></div></div></section>
 </div>
 <div class="footer">OncoCare · Pediatric Hematology & Oncology</div>
@@ -135,9 +168,8 @@ function render(){updViewCounts();const live=data.filter(x=>!x.cancelled),c=s=>l
  $('countAll').textContent=live.length;$('countPending').textContent=c(['Pending','Sending','Failed']);$('countSent').textContent=c(['Sent','Delivered','Read']);
  const root=$('appointments');root.innerHTML='';const rows=filtered();if(!data.length){root.innerHTML='<p class="hint">No procedures registered yet.</p>';return}if(!rows.length){root.innerHTML='<p class="hint">'+(Q?'No procedure matches your search.':'Nothing in this view.')+'</p>';return}
  const tm=baghdad(86400e3);
- rows.forEach(a=>{const b=document.createElement('button');b.className='item';b.innerHTML='<span><strong></strong><small></small></span><span class="pill"></span>';
-  const st=b.querySelector('strong');st.textContent=(selMode?(sel.has(a.id)?'☑ ':'☐ '):'')+(a.patient_initials||'—');if(a.created_by_name||a.created_by_email){const by=document.createElement('span');by.textContent=' · 👤 '+(a.created_by_name||a.created_by_email);by.style.cssText='font-weight:400;font-size:12px;color:var(--muted)';st.appendChild(by)}
-  b.querySelector('small').textContent=`${ORDER.filter(x=>a.procs.includes(x)).join(' + ')} · ${dl(a.proc_date)} ${a.proc_time.slice(0,5)} · ${a.phoneClear||'(locked)'}`;
+ rows.forEach(a=>{const b=document.createElement('button');b.className='item';b.innerHTML='<span class="it"><strong dir="auto"></strong><span class="pill"></span></span><span class="ip"></span><span class="id"></span><span class="ik"></span>';
+  const st=b.querySelector('strong');st.textContent=(selMode?(sel.has(a.id)?'☑ ':'☐ '):'')+(a.patient_initials||'—');b.querySelector('.ip').textContent=procLabel(a);b.querySelector('.id').textContent=dl(a.proc_date)+' · '+clock(a.proc_time);b.querySelector('.ik').textContent='📞 '+(a.phoneClear||'(locked)')+((a.created_by_name||a.created_by_email)?'  ·  👤 '+(a.created_by_name||a.created_by_email):'');
   const p=b.querySelector('.pill'),nn=['Needed','Failed'].includes(a.notice_status);p.textContent=a.status;
   if(a.cancelled){p.textContent=nn?'Cancelled · tell family':'Cancelled';if(nn)p.classList.add('bad');b.style.opacity='.75'}
   else if(nn){p.textContent=a.notice_status==='Failed'?'Notice failed':'Tell family: changed';p.classList.add('bad')}
@@ -202,9 +234,9 @@ $('form').onsubmit=async e=>{e.preventDefault();if(!procs.length){alert('Please 
 let channel;
 let me=null,uid=null,lastSession=null;
 async function loadStaff(){const {data:rows}=await sb.from('staff').select('*').order('requested_at');if(!rows)return;
- const pend=rows.filter(r=>!r.approved&&!r.declined).length;$('accTab').textContent='☺ Account'+(pend?` (${pend} new)`:'');
+ const pend=rows.filter(r=>!r.approved&&!r.declined).length;$('accTab').querySelector('span').textContent='Account'+(pend?' ('+pend+')':'');
  const root=$('staffList');root.innerHTML='';const rk=r=>r.approved?1:r.declined?2:0;
- rows.sort((x,y)=>rk(x)-rk(y)).forEach(r=>{const d=document.createElement('div');d.className='item';d.innerHTML='<span><strong></strong><small></small></span><button class="btn"></button>';
+ rows.sort((x,y)=>rk(x)-rk(y)).forEach(r=>{const d=document.createElement('div');d.className='drow';d.innerHTML='<div><strong></strong><small></small></div><button class="btn"></button>';
   d.querySelector('strong').textContent=r.full_name||r.email;d.querySelector('small').textContent=(r.full_name?r.email+' · ':'')+(r.is_owner?'Owner':r.is_admin?'Administrator':r.approved?'Approved':r.declined?'Declined':'Waiting for approval');
   const box=document.createElement('span');box.style.cssText='display:flex;gap:6px;flex-wrap:wrap';d.querySelector('button').replaceWith(box);
   const add=(label,fn,pr)=>{const b=document.createElement('button');b.className='btn'+(pr?' primary':'');b.textContent=label;b.onclick=fn;box.appendChild(b)};
@@ -310,7 +342,7 @@ const IR=t=>t.replace(/[^\p{L}]/gu,'').toUpperCase();
 let listView='upcoming',selMode=false,LF=null;const sel=new Set();
 const byView=()=>{const t=baghdad(0);return data.filter(x=>listView==='all'||(listView==='cancelled'?x.cancelled:listView==='past'?!x.cancelled&&x.proc_date<t:!x.cancelled&&x.proc_date>=t))};
 function updViewCounts(){const t=baghdad(0),c={upcoming:0,past:0,cancelled:0,all:data.length};data.forEach(x=>{if(x.cancelled)c.cancelled++;else if(x.proc_date<t)c.past++;else c.upcoming++});
- document.querySelectorAll('[data-view]').forEach(b=>b.textContent=({upcoming:'Upcoming',past:'Past',cancelled:'Cancelled',all:'All'})[b.dataset.view]+' ('+c[b.dataset.view]+')')}
+ document.querySelectorAll('[data-view]').forEach(b=>{const v=b.dataset.view,sm=document.createElement('small');sm.textContent=c[v];b.replaceChildren(({upcoming:'Upcoming',past:'Past',cancelled:'Cancelled',all:'All'})[v],sm)})}
 function filtered(){$('searchNote').textContent='';if(!Q)return LF?data.filter(LF.fn):byView();
  const ex=data.filter(x=>(x.mrn_hash&&x.mrn_hash===Q.mh)||(x.name_hash&&x.name_hash===Q.nh)||(Q.dg&&(x.phoneClear||'').replace(/\D/g,'').includes(Q.dg)));
  if(ex.length){$('searchNote').textContent=ex.length+' exact match'+(ex.length>1?'es':'')+'.';return ex}
@@ -433,6 +465,7 @@ $('dExport').onclick=()=>{const m=$('dMonth').value;if(!m)return;const [y,mo]=m.
   ...Object.entries(S.cls).sort((a,b)=>b[1]-a[1]),[],['Date','Scheduled','Cancelled'],...Object.keys(S.days).map(d=>[d,S.days[d][0],S.days[d][1]])];
  const blob=new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='OncoCare-summary-'+m+'.csv';a.click()};
 setInterval(()=>{if(me&&!$('dashboard').classList.contains('hidden'))renderDash()},300000);
+const wide=matchMedia('(min-width:820px)'),foldSync=()=>document.querySelectorAll('details.fold').forEach(d=>{d.open=wide.matches||d.hasAttribute('data-open')});foldSync();wide.addEventListener('change',()=>{if(wide.matches)document.querySelectorAll('details.fold,details.fold2').forEach(d=>d.open=true)});
 /* list views and bulk delete (administrators) */
 const updBulk=()=>{$('selAll').classList.toggle('hidden',!selMode);$('delSel').classList.toggle('hidden',!selMode);$('selMode').textContent=selMode?'Done selecting':'Select';$('delSel').textContent='Delete selected ('+sel.size+')';$('delSel').disabled=!sel.size};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{LF=null;$('filterBar').classList.add('hidden');listView=b.dataset.view;sel.clear();document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('primary',x===b));render();updBulk()});

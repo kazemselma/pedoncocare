@@ -1,6 +1,8 @@
 // ALL WhatsApp message texts. They contain NO patient name and NO MRN.
-// Create these 8 templates in Meta (category Utility) with EXACTLY this text:
-//   procedure_reminder_ar / _en  (5 variables)   hla_reminder_ar / _en  (3 variables)
+// Create these 10 templates in Meta (category Utility) with EXACTLY this text:
+//   procedure_reminder_ar / _en  (5 variables)  used when BMA, IT or MRD is included (fasting instructions)
+//   hla_reminder_ar / _en        (3 variables)  HLA without BMA/IT/MRD (no fasting, bring sibling)
+//   chemo_reminder_ar / _en      (3 variables)  chemotherapy only (no fasting statement)
 //   procedure_changed_ar / _en   (3 variables)   procedure_cancelled_ar / _en  (3 variables)
 // Reminder: {{1}} procedure(s) {{2}} date {{3}} time {{4}} food-stop time {{5}} liquids-stop time
 // HLA / changed / cancelled: {{1}} procedure(s) {{2}} date {{3}} time
@@ -42,13 +44,13 @@ Al-Mujtaba Hospital for Hematology & Bone Marrow Transplant`},
 TPL_HLA:{
 Arabic:`السلام عليكم ورحمة الله وبركاته،
 
-نود تذكيركم بموعد فحص طفلكم لدى قسم أمراض الدم والأورام للأطفال:
+نود تذكيركم بموعد طفلكم لدى قسم أمراض الدم والأورام للأطفال:
 
-🩺 الفحص: {{1}}
+🩺 الإجراء: {{1}}
 📅 التاريخ: {{2}}
 ⏰ الوقت: {{3}}
 
-✅ لا يلزم الصيام لهذا الفحص.
+✅ لا يلزم الصيام لفحص تطابق الأنسجة (HLA).
 👫 يرجى إحضار أخ/أخت الطفل معكم في الموعد.
 
 يرجى الحضور إلى المستشفى في الوقت المحدد. وفي حال وجود أي استفسار يرجى التواصل مع القسم.
@@ -57,14 +59,43 @@ Arabic:`السلام عليكم ورحمة الله وبركاته،
 مستشفى المجتبى لأمراض الدم وزرع النخاع`,
 English:`Hello,
 
-This is a reminder of your child's upcoming test at the Pediatric Hematology & Oncology department:
+This is a reminder of your child's upcoming appointment at the Pediatric Hematology & Oncology department:
 
-🩺 Test: {{1}}
+🩺 Procedure: {{1}}
 📅 Date: {{2}}
 ⏰ Time: {{3}}
 
-✅ No fasting is needed for this test.
+✅ No fasting is needed for the HLA blood test.
 👫 Please bring your child's sibling with you to the appointment.
+
+Please arrive at the hospital at the scheduled time. If you have any questions, please contact the department.
+
+Wishing your child good health.
+Al-Mujtaba Hospital for Hematology & Bone Marrow Transplant`},
+TPL_CHEMO:{
+Arabic:`السلام عليكم ورحمة الله وبركاته،
+
+نود تذكيركم بموعد طفلكم لدى قسم أمراض الدم والأورام للأطفال:
+
+🩺 الإجراء: {{1}}
+📅 التاريخ: {{2}}
+⏰ الوقت: {{3}}
+
+يرجى اتباع تعليمات الفريق المعالج لطفلكم بخصوص الطعام والأدوية.
+
+يرجى الحضور إلى المستشفى في الوقت المحدد. وفي حال وجود أي استفسار يرجى التواصل مع القسم.
+
+نتمنى لطفلكم الصحة والسلامة ❤️
+مستشفى المجتبى لأمراض الدم وزرع النخاع`,
+English:`Hello,
+
+This is a reminder of your child's upcoming appointment at the Pediatric Hematology & Oncology department:
+
+🩺 Procedure: {{1}}
+📅 Date: {{2}}
+⏰ Time: {{3}}
+
+Please follow the instructions given by your child's treating team about food and medicines.
 
 Please arrive at the hospital at the scheduled time. If you have any questions, please contact the department.
 

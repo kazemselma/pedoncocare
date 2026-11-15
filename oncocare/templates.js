@@ -1,6 +1,7 @@
 // ALL WhatsApp message texts. They contain NO patient name and NO MRN.
-// Create these 10 templates in Meta (category Utility) with EXACTLY this text:
+// Create these 12 templates in Meta (category Utility) with EXACTLY this text:
 //   procedure_reminder_ar / _en  (5 variables)  used when BMA, IT or MRD is included (fasting instructions)
+//   infant_reminder_ar / _en     (5 variables)  same, for an infant on breast milk only (4 h breast milk, 2 h other liquids)
 //   hla_reminder_ar / _en        (3 variables)  HLA without BMA/IT/MRD (no fasting, bring sibling)
 //   chemo_reminder_ar / _en      (3 variables)  chemotherapy only (no fasting statement)
 //   procedure_changed_ar / _en   (3 variables)   procedure_cancelled_ar / _en  (3 variables)
@@ -36,6 +37,39 @@ This is a reminder of your child's upcoming procedure at the Pediatric Hematolog
 Fasting instructions:
 🔴 No food for 6 hours before the procedure – from {{4}}.
 🔴 No liquids for 2 hours before the procedure – from {{5}}.
+
+Please arrive at the hospital at the scheduled time. If you have any questions, please contact the department.
+
+Wishing your child good health.
+Al-Mujtaba Hospital for Hematology & Bone Marrow Transplant`},
+TPL_INFANT:{
+Arabic:`السلام عليكم ورحمة الله وبركاته،
+
+نود تذكيركم بموعد إجراء طفلكم لدى قسم أمراض الدم والأورام للأطفال:
+
+🩺 الإجراء: {{1}}
+📅 التاريخ: {{2}}
+⏰ الوقت: {{3}}
+
+تعليمات الصيام للرضيع الذي يعتمد على حليب الأم فقط:
+🔴 الامتناع عن الرضاعة الطبيعية قبل 4 ساعات من موعد الإجراء، أي ابتداءً من الساعة {{4}}.
+🔴 الامتناع عن أي سوائل أخرى قبل ساعتين من موعد الإجراء، أي ابتداءً من الساعة {{5}}.
+
+يرجى الحضور إلى المستشفى في الوقت المحدد. وفي حال وجود أي استفسار يرجى التواصل مع القسم.
+
+نتمنى لطفلكم الصحة والسلامة ❤️
+مستشفى المجتبى لأمراض الدم وزرع النخاع`,
+English:`Hello,
+
+This is a reminder of your child's upcoming procedure at the Pediatric Hematology & Oncology department:
+
+🩺 Procedure: {{1}}
+📅 Date: {{2}}
+⏰ Time: {{3}}
+
+Fasting instructions for an infant who is fed breast milk only:
+🔴 No breast milk for 4 hours before the procedure – from {{4}}.
+🔴 No other liquids for 2 hours before the procedure – from {{5}}.
 
 Please arrive at the hospital at the scheduled time. If you have any questions, please contact the department.
 

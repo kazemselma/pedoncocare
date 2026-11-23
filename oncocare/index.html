@@ -98,7 +98,7 @@ button,.btn{min-height:46px}
 <section class="panel"><div class="dtitle"><h3 id="dTodayTitle">📅 Today's Procedures</h3><input type="date" id="dDay"></div><div id="dToday" class="list"></div></section>
 <section class="panel attn"><h3>⚠️ Requires Staff Attention</h3><div id="dAttn" class="list"></div></section>
 </div><div class="dcol">
-<details class="panel fold"><summary>🕘 Recent Activity</summary><div id="dAct" class="list"></div></details>
+<details class="panel fold"><summary>🕘 Recent Activity</summary><div id="dAct" class="list"></div><div id="actAdmin" class="hidden" style="margin-top:12px"><button type="button" class="btn danger" id="actClear">Clear recent activity</button></div></details>
 </div></div>
 </div>
 <div id="qiView" class="dash hidden">
@@ -304,7 +304,7 @@ async function enter(session){lastSession=session;
  if(!KEY){$('app').classList.add('hidden');$('keyGate').classList.remove('hidden');return}
  $('keyGate').classList.add('hidden');
  $('who').textContent='Signed in as '+(st.full_name?st.full_name+' · ':'')+session.user.email+(me.is_admin?' (administrator)':'');
- await load();pushRefresh();$('admin').classList.toggle('hidden',!me.is_admin);$('phoneAdmin').classList.toggle('hidden',!me.is_owner);$('bulkBar').classList.toggle('hidden',!me.is_admin);$('dExportBox').classList.toggle('hidden',!me.is_admin);if(me.is_admin)loadStaff();
+ await load();pushRefresh();$('admin').classList.toggle('hidden',!me.is_admin);$('phoneAdmin').classList.toggle('hidden',!me.is_owner);$('bulkBar').classList.toggle('hidden',!me.is_admin);$('actAdmin').classList.toggle('hidden',!me.is_admin);$('dExportBox').classList.toggle('hidden',!me.is_admin);if(me.is_admin)loadStaff();
  if(channel)sb.removeChannel(channel);channel=sb.channel('live').on('postgres_changes',{event:'*',schema:'public',table:'appointments'},load).on('postgres_changes',{event:'*',schema:'public',table:'staff'},()=>{if(me?.is_admin)loadStaff()}).subscribe()}
 document.querySelectorAll('[data-eye]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.eye),show=i.type==='password';i.type=show?'text':'password';
  b.setAttribute('aria-pressed',String(show));b.setAttribute('aria-label',show?'Hide password':'Show password');b.querySelector('.eo').style.display=show?'none':'';b.querySelector('.ec').style.display=show?'':'none';i.focus()}));
@@ -528,7 +528,7 @@ function renderDash(){
  renderAct()}
 const EVT={registered:'New appointment registered',edited:'Appointment edited',rescheduled:'Appointment rescheduled',cancelled:'Appointment cancelled',deleted:'Appointment deleted',reminder_sent:'Reminder submitted to WhatsApp',reminder_marked_sent:'Reminder marked as sent (manual)',reminder_failed:'Reminder failed',notice_sent:'Change/cancellation notice sent',notice_failed:'Notice failed',family_confirmed:'Family confirmed the appointment',confirmation_removed:'Family confirmation removed',access_requested:'Staff access requested',access_approved:'Staff access approved',access_declined:'Staff access declined',access_removed:'Staff access removed'};
 async function loadActivity(){const {data:r,error}=await sb.from('activity_log').select('*').order('at',{ascending:false}).limit(30);ACT=error?null:r;renderAct()}
-function renderAct(){const box=$('dAct');box.innerHTML='';
+function renderAct(){const box=$('dAct');box.innerHTML='';$('actClear').disabled=!(ACT&&ACT.length);
  if(ACT===null){box.appendChild(E('p','hint','The activity log is not set up yet. Run dashboard.sql in Supabase.'));return}
  if(!ACT.length){box.appendChild(E('p','hint','No activity recorded yet.'));return}
  ACT.forEach(e=>{const r=E('div','drow'),l=E('div'),isAcc=e.event.startsWith('access_');
@@ -536,6 +536,13 @@ function renderAct(){const box=$('dAct');box.innerHTML='';
   const what=isAcc?(e.detail||''):[e.initials,e.procs&&e.procs.length?ORDER.filter(x=>e.procs.includes(x)).map(PLAB).join(' + '):'',e.proc_date?dmy(e.proc_date)+' '+clock(e.proc_time):''].filter(Boolean).join(' · ');
   if(what)l.appendChild(E('small',null,what));
   l.appendChild(E('small',null,new Date(e.at).toLocaleString('en-GB',{timeZone:TZ,day:'numeric',month:'short',hour:'numeric',minute:'2-digit',hour12:true})+(e.actor_name?' · '+e.actor_name:'')));r.appendChild(l);box.appendChild(r)})}
+$('actClear').onclick=async()=>{if(!me||!me.is_admin||!ACT||!ACT.length)return;
+ if(!confirm('Clear all recent activity for everyone?\n\nThis cannot be undone. It removes the activity list shown here; appointments are not affected.'))return;
+ const b=$('actClear');b.disabled=true;
+ const {data,error}=await sb.from('activity_log').delete().gte('at','1970-01-01').select();
+ if(error){alert('Could not clear activity: '+error.message);await loadActivity();return}
+ if(!data||!data.length)alert('Nothing was deleted. The database does not allow administrators to clear activity yet. Run clear-activity.sql in Supabase.');
+ await loadActivity()};
 $('dRefresh').onclick=async()=>{$('dRefresh').disabled=true;await load();$('dRefresh').disabled=false};
 document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{rng.mode=b.dataset.range;document.querySelectorAll('[data-range]').forEach(x=>x.classList.toggle('primary',x===b));$('dCustom').classList.toggle('hidden',rng.mode!=='custom');
  if(rng.mode==='custom'){rng.from=rng.from||baghdad(-29*86400e3);rng.to=rng.to||today0();$('dFrom').value=rng.from;$('dTo').value=rng.to}renderDash()});

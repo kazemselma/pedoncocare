@@ -166,6 +166,10 @@ add([
 'Staff access removed','أُزيل وصول موظف',
 'The activity log is not set up yet. Run dashboard.sql in Supabase.','سجل النشاط غير مُعدّ بعد. شغّل الملف dashboard.sql في Supabase.',
 'No activity recorded yet.','لم يُسجَّل أي نشاط بعد.',
+'Clear recent activity','مسح النشاط الأخير',
+'Clear all recent activity for everyone?','هل تريد مسح كل النشاط الأخير للجميع؟',
+'This cannot be undone. It removes the activity list shown here; appointments are not affected.','لا يمكن التراجع عن هذا. سيُزيل قائمة النشاط المعروضة هنا؛ ولا تتأثر المواعيد.',
+'Nothing was deleted. The database does not allow administrators to clear activity yet. Run clear-activity.sql in Supabase.','لم يُحذف شيء. قاعدة البيانات لا تسمح للمسؤولين بمسح النشاط بعد. شغّل الملف clear-activity.sql في Supabase.',
 /* register form */
 'Register a procedure','تسجيل إجراء',
 'Edit procedure','تعديل الإجراء',
@@ -357,7 +361,7 @@ function nAppt(n){n=+n;return n===1?'موعد واحد':n===2?'موعدان':n<=
 function nProc(n){n=+n;return n===1?'إجراء واحد':n===2?'إجراءان':n<=10?n+' إجراءات':n+' إجراءً'}
 
 /* ---------- messages that start with a fixed phrase (the rest, such as a server error, is kept as is) ---------- */
-var PFX=[['Could not load schedule: ','تعذّر تحميل الجدول: '],['Could not send: ','تعذّر الإرسال: '],['Could not save: ','تعذّر الحفظ: '],['Could not delete: ','تعذّر الحذف: '],['Could not unlock: ','تعذّر الفتح: '],['Could not change notifications: ','تعذّر تغيير الإشعارات: '],['Could not make the QR code: ','تعذّر إنشاء رمز QR: '],['Sign-in failed: ','فشل تسجيل الدخول: '],['Request failed: ','فشل الطلب: '],['Stopped: ','توقّف: '],['Last error: ','آخر خطأ: '],['Sending failed.','فشل الإرسال.']];
+var PFX=[['Could not load schedule: ','تعذّر تحميل الجدول: '],['Could not send: ','تعذّر الإرسال: '],['Could not save: ','تعذّر الحفظ: '],['Could not delete: ','تعذّر الحذف: '],['Could not clear activity: ','تعذّر مسح النشاط: '],['Could not unlock: ','تعذّر الفتح: '],['Could not change notifications: ','تعذّر تغيير الإشعارات: '],['Could not make the QR code: ','تعذّر إنشاء رمز QR: '],['Sign-in failed: ','فشل تسجيل الدخول: '],['Request failed: ','فشل الطلب: '],['Stopped: ','توقّف: '],['Last error: ','آخر خطأ: '],['Sending failed.','فشل الإرسال.']];
 
 /* ---------- text with numbers or names inside ---------- */
 var P=[

@@ -1,4 +1,4 @@
-const CACHE='oncocare-v7',FILES=['./','./index.html','./config.js','./templates.js','./i18n.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
+const CACHE='oncocare-v8',FILES=['./','./index.html','./config.js','./templates.js','./i18n.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x))))));
 // Network first for the app shell so updates arrive; never touch API/cross-origin calls.
